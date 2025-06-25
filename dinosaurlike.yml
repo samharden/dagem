@@ -1,0 +1,52 @@
+#
+# This is a docassemble interview file (in YAML format).
+# It asks the user for their name, address, favorite food, and their opinion on dinosaurs.
+#
+---
+# This mandatory block ensures that the interview runs until the final screen is displayed.
+# It defines the end point of the interview.
+mandatory: True
+code: |
+  final_screen
+---
+# This is the first question block. It sets the title and asks the initial set of questions.
+# The 'fields' section defines the variables to be collected.
+question: |
+  Welcome! Please tell us a little about yourself.
+fields:
+  - Your Name: user_name
+  - Your Address: user_address
+    datatype: Address
+  - Your favorite food: favorite_food
+---
+# This question block uses a slider to ask for a rating.
+# Sliders are great for capturing subjective opinions on a scale.
+question: |
+  On a scale of 1 to 10, how much do you like dinosaurs?
+  (1 = Not at all, 10 = They are the absolute best)
+fields: 
+- no label: dinosaur_liking
+  datatype: range
+  min: 1
+  max: 10
+  step: 1
+---
+# This is the final screen of the interview. It doesn't ask any questions.
+# It uses Mako templating to display the information that has been collected.
+# The 'event' keyword marks this as a terminal screen.
+question: |
+  Thank you for completing the survey!
+subquestion: |
+  Here is a summary of your responses:
+
+  **Name:** ${ user_name }
+
+  **Address:**
+  ${ user_address }
+
+  **Favorite Food:** ${ favorite_food }
+
+  **Dinosaur Liking Score:** ${ dinosaur_liking } out of 10
+
+event: final_screen
+---
