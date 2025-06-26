@@ -1,0 +1,69 @@
+---
+## This is an example interview created in response to this quesiton: 
+### Can you create an interview that asks the user to name their favorite fruits one-by-one and what color they are, and then asks them if they’re done adding them. At the end it should give them a table of their favorite fruits and their colors.
+---
+metadata:
+  title: Your Favorite Fruits
+  short title: Favorite Fruits
+  description: |
+    An interview to collect a list of your favorite fruits
+    and their colors.
+---
+# This is a best practice welcome screen.
+# It appears first because it is an `initial` block and is `mandatory`.
+
+question: |
+  ## Welcome!
+
+  This interview will ask you to list your favorite fruits one by one. 
+  
+  For each fruit, you will be asked for its name and its color.
+
+  When you are finished, we will show you a summary table.
+buttons:
+  - Continue: continue
+---
+# This 'objects' block defines our data structure.
+# We are creating a list called 'favorite_fruits'.
+# Each item in the list will be a 'Fruit' object.
+objects:
+  - favorite_fruits: DAList.using(object_type=DAObject, there_are_any=True, complete_attribute='complete')
+  - Fruit: DAObject
+---
+code: |
+  favorite_fruits[i].name
+  favorite_fruits[i].color
+  favorite_fruits[i].complete = True
+---
+# This question will be asked for each fruit the user wants to add.
+# The special variable '[i]' refers to the current item being added to the list.
+question: |
+  Tell me about a favorite fruit.
+fields:
+  - Name: favorite_fruits[i].name
+  - Color: favorite_fruits[i].color
+---
+# This question block customizes the prompt that asks the user if they want to add another fruit.
+# The 'DAList' object automatically looks for a question that defines 'there_is_another'.
+question: |
+  Do you want to add another fruit?
+yesno: favorite_fruits.there_is_another
+---
+# This is the final screen. It will only be shown after the list is complete.
+# The 'mandatory: True' ensures it's a terminal block in this logic path.
+mandatory: True
+question: |
+  ## Your List of Favorite Fruits
+
+  Here is the table of the fruits and colors you provided.
+  ${favorite_fruits.table}
+---
+table: favorite_fruits.table
+
+rows: favorite_fruits
+  # 'columns' defines the table headers and what data to show in each cell.
+  # 'row_item' is a special variable representing one item from the 'rows' list.
+columns:
+  - Fruit Name: row_item.name
+  - Color: row_item.color
+---
