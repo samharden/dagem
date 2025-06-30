@@ -1,0 +1,90 @@
+objects:
+  seeds_of_fruit: DADict
+  building: DAList.using(object_type=Thing, minimum_number=1)
+---
+code: |
+  if has_fruit == True:
+    seeds_of_fruit.there_are_any = True
+  else:
+    seeds_of_fruit.there_are_any = False
+---
+question: |
+  Do you have fruit?
+yesno: has_fruit
+---
+question: |
+  Tell me about a fruit.
+fields:
+  - Name: seeds_of_fruit.new_item_name
+  - Seeds: seeds_of_fruit.new_item_value
+    datatype: integer
+    min: 0
+
+---
+question: |
+  Tell me about the ${ ordinal(i) }
+  building.
+fields:
+  - Name: building[i].name.text
+  - Color: building[i].color
+  - Stories: building[i].stories
+    datatype: integer
+---
+question: |
+  Are there any other fruits you would
+  like to describe?
+yesno: seeds_of_fruit.there_is_another
+---
+---
+question: |
+  Are there any other b dogs you would
+  like to describe?
+yesno: building.there_is_another
+---
+### This is the end screen that displays the document preview
+### using the template from the attachment block
+mandatory: True
+question: |
+  Here is your document. You can click on it to download it as a word document.
+
+  ${tabletemplate}
+  
+subquestion: |
+
+  #buildings table: 
+  ${ building.table }
+
+  % for b in building.sort(key=lambda y: y.stories):
+  ${ capitalize(b) }
+  is
+  ${ quantity_noun(b.stories, 'story') }
+  tall.
+  Color: ${b.color}
+  Its intrinsic name is now
+  ${ b }.
+  
+  % endfor
+  
+
+---
+
+
+---  
+# The attachment block can stand on its own, and allows the embedding 
+# of the completed file in a different question block
+attachment:
+  filename: tabletemplate
+  name: tabletemplate
+  variable name: tabletemplate
+  docx template file: table_template.docx
+
+---
+# The table block for embedding in the final screen
+table: building.table
+rows: building
+columns:
+  - Name: row_item.name
+  - Color: row_item.color
+  - Stories: row_item.stories
+---
+  
